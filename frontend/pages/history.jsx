@@ -5,8 +5,9 @@ export default function HistoryPage() {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    // This runs ONLY in browser
+    
     const storedUserId = localStorage.getItem("userId");
+      console.log("FRONTEND userId:", storedUserId);
     setUserId(storedUserId);
   }, []);
 
@@ -15,8 +16,9 @@ export default function HistoryPage() {
 
     fetch(`http://localhost:5000/api/code/history/${userId}`)
       .then(res => res.json())
-      .then(data => setSubmissions(data))
-      .catch(err => console.error(err));
+      .then(response => {
+    setSubmissions(response.data); 
+  });
   }, [userId]);
 
   return (
