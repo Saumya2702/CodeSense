@@ -11,10 +11,13 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use("/api/code", codeRoutes);
+
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+
+app.use("/api/code", codeRoutes);
 
 app.get("/", (req, res) => {
   res.send("CodeSense backend running.");

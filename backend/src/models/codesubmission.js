@@ -10,7 +10,7 @@ const codeSubmissionSchema = new mongoose.Schema({
         required: true
      },
 
-     codeText: { type: String,
+     code: { type: String,
         required: true 
      }
 }, 
