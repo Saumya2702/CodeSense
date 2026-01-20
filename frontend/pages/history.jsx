@@ -6,12 +6,13 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
+  
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     setUserId(storedUserId);
   }, []);
 
+  // Fetch submission history
   useEffect(() => {
     if (!userId) return;
 
@@ -21,7 +22,7 @@ export default function HistoryPage() {
     fetch(`http://localhost:5000/api/code/history/${userId}`)
       .then(res => res.json())
       .then(response => {
-        // supports both: [] OR { data: [] }
+        
         const data = Array.isArray(response)
           ? response
           : response.data ?? [];
@@ -36,7 +37,7 @@ export default function HistoryPage() {
       });
   }, [userId]);
 
-  // Sort newest first (defensive)
+  
   const sortedSubmissions = [...submissions].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
@@ -67,7 +68,7 @@ export default function HistoryPage() {
             <tr>
               <th>Language</th>
               <th>Submitted At</th>
-              <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
 
@@ -76,8 +77,18 @@ export default function HistoryPage() {
               <tr key={sub._id}>
                 <td>{sub.language.toUpperCase()}</td>
                 <td>{new Date(sub.createdAt).toLocaleString()}</td>
-                <td style={{ color: "green", fontWeight: "bold" }}>
-                  Submitted
+                <td>
+                  <button
+                    onClick={() => {
+                      window.location.href = `/review/${sub._id}`;
+                    }}
+                    style={{
+                      padding: "6px 12px",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Review
+                  </button>
                 </td>
               </tr>
             ))}

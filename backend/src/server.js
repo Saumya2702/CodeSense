@@ -3,6 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import codeRoutes from "./routes/code.routes.js";
 import connectDB from "./config/db.js";
+import reviewRoutes from "./routes/review.routes.js";
+
+
 
 dotenv.config();
 connectDB();
@@ -18,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/api/code", codeRoutes);
+app.use("/api/review", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.send("CodeSense backend running.");
