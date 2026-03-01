@@ -28,7 +28,126 @@ function estimateSpaceComplexity(code) {
   return "O(1)";
 }
 
-function buildReview(submission) {
+function countPatternHits(submissions) {
+  const joined = submissions.map((s) => s.code || "");
+
+  const offByOneHits = joined.filter(
+    (code) => /(<=\s*\w+)|(\w+\s*<=\s*\w+)|(i\+\+\s*;\s*\})/.test(code) && !/length\s*-\s*1/.test(code)
+  ).length;
+
+  const nullCheckMisses = joined.filter(
+    (code) => !/(null|undefined|if\s*\([^)]*\))/.test(code)
+  ).length;
+
+  const poorNamingHits = joined.filter(
+    (code) => /\b(temp|var1|var2|data|arr|x|y)\b/.test(code)
+  ).length;
+
+  const nonOptimalSignals = joined.filter(
+    (code) => /(for|while)[\s\S]{0,180}(for|while)/i.test(code)
+  ).length;
+
+  return {
+    offByOneHits,
+    nullCheckMisses,
+    poorNamingHits,
+    nonOptimalSignals,
+  };
+}
+
+function buildInterviewReadinessEngine(submission, historicalSubmissions, reviewContext) {
+  const total = historicalSubmissions.length || 1;
+  const patternHits = countPatternHits(historicalSubmissions);
+
+  const logicMasteryScore = Math.max(
+    35,
+    90 - reviewContext.logicIssues.length * 12 - Math.min(patternHits.offByOneHits * 3, 15)
+  );
+
+  const complexityUnderstandingScore = Math.max(
+    30,
+    88 - (reviewContext.timeComplexity.includes("n²") ? 18 : 6) - Math.min(patternHits.nonOptimalSignals * 2, 14)
+  );
+
+  const codeQualityScore = Math.max(
+    40,
+    92 - Math.min(patternHits.poorNamingHits * 5, 25) - (reviewContext.hasComments ? 0 : 8)
+  );
+
+  const interviewConfidenceScore = Math.round(
+    logicMasteryScore * 0.35 +
+      complexityUnderstandingScore * 0.3 +
+      codeQualityScore * 0.2 +
+      reviewContext.overallScore * 0.15
+  );
+
+  const interviewReadinessPercent = Math.round(
+    (logicMasteryScore + complexityUnderstandingScore + codeQualityScore + interviewConfidenceScore) / 4
+  );
+
+  const weakestMap = {
+    logic: logicMasteryScore,
+    complexity: complexityUnderstandingScore,
+    quality: codeQualityScore,
+    confidence: interviewConfidenceScore,
+  };
+
+  const weakestAreaKey = Object.entries(weakestMap).sort((a, b) => a[1] - b[1])[0][0];
+
+  const weakestArea = {
+    logic: "Logic Mastery",
+    complexity: "Time Complexity",
+    quality: "Code Quality",
+    confidence: "Interview Confidence",
+  }[weakestAreaKey];
+
+  const strength =
+    codeQualityScore >= complexityUnderstandingScore
+      ? "Clean Code Structure"
+      : "Problem Solving Flow";
+
+  const recommendedFocus =
+    weakestAreaKey === "complexity"
+      ? "Dynamic Programming"
+      : weakestAreaKey === "logic"
+      ? "Edge Cases & Boundary Handling"
+      : weakestAreaKey === "quality"
+      ? "Naming, Modularity, and Readability"
+      : "Mock Interview Practice";
+
+  const patternDetections = [
+    {
+      label: "Repeated off-by-one errors",
+      detected: patternHits.offByOneHits >= Math.max(2, Math.ceil(total * 0.3)),
+    },
+    {
+      label: "Always missing null checks",
+      detected: patternHits.nullCheckMisses >= Math.max(2, Math.ceil(total * 0.4)),
+    },
+    {
+      label: "Poor variable naming habits",
+      detected: patternHits.poorNamingHits >= Math.max(2, Math.ceil(total * 0.3)),
+    },
+    {
+      label: "Avoiding optimal solutions",
+      detected: patternHits.nonOptimalSignals >= Math.max(2, Math.ceil(total * 0.35)),
+    },
+  ];
+
+  return {
+    logicMasteryScore,
+    complexityUnderstandingScore,
+    codeQualityScore,
+    interviewConfidenceScore,
+    interviewReadinessPercent,
+    weakestArea,
+    strength,
+    recommendedFocus,
+    patternDetections,
+  };
+}
+
+async function buildReview(submission) {
   const code = submission.code || "";
   const lines = code.split("\n").length;
   const hasInputValidation = /if\s*\(|try\s*\{|catch\s*\(/i.test(code);
@@ -55,12 +174,29 @@ function buildReview(submission) {
   }
 
   const overallScore = Math.max(55, 90 - logicIssues.length * 8 - securityIssues.length * 7);
+  const timeComplexity = estimateTimeComplexity(code);
+  const spaceComplexity = estimateSpaceComplexity(code);
+
+  const historicalSubmissions = await CodeSubmission.find({ userId: submission.userId })
+    .sort({ createdAt: -1 })
+    .limit(30);
+
+  const interviewReadinessEngine = buildInterviewReadinessEngine(
+    submission,
+    historicalSubmissions,
+    {
+      logicIssues,
+      overallScore,
+      timeComplexity,
+      hasComments,
+    }
+  );
 
   return {
     submissionId: submission._id,
     overallScore,
-    timeComplexity: estimateTimeComplexity(code),
-    spaceComplexity: estimateSpaceComplexity(code),
+    timeComplexity,
+    spaceComplexity,
     logicIssues: logicIssues.length
       ? logicIssues
       : ["No major logical red flags from quick static scan."],
@@ -72,6 +208,7 @@ function buildReview(submission) {
         ? "Solid baseline. With stronger edge-case handling and cleaner structure, this would perform well in interviews."
         : "Core idea is visible, but interview readiness needs stronger validation, structure, and explanation clarity.",
     suggestedImprovements,
+    interviewReadinessEngine,
   };
 }
 
@@ -95,9 +232,11 @@ router.get("/:submissionId", async (req, res) => {
       });
     }
 
+    const review = await buildReview(submission);
+
     return res.status(200).json({
       success: true,
-      data: buildReview(submission),
+      data: review,
     });
   } catch (error) {
     return res.status(500).json({

@@ -1,21 +1,13 @@
-"use client";
-
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import Navbar from "@/components/Navbar";
 import { buildApiUrl } from "@/lib/api";
 
-type Submission = {
-  _id: string;
-  language: string;
-  createdAt: string;
-};
-
 export default function HistoryPage() {
   const router = useRouter();
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId") || "demo-user";
