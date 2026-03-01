@@ -3,10 +3,15 @@ import Editor from "@/components/Editor";
 
 export default function SubmitPage() {
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100">
       <Navbar />
-      <main className="mx-auto w-full max-w-4xl px-6 py-8">
-        <h2 className="mb-4 text-2xl font-semibold">Submit Code</h2>
+      <main className="mx-auto w-full max-w-5xl px-6 py-8">
+        <header className="animate-fade-up mb-5">
+          <h2 className="text-3xl font-extrabold">Submit Code</h2>
+          <p className="mt-2 text-zinc-600 dark:text-zinc-300">
+            Paste your latest solution and get an instant structured review.
+          </p>
+        </header>
         <Editor />
       </main>
     </div>

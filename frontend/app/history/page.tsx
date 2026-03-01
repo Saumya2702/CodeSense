@@ -38,45 +38,51 @@ export default function HistoryPage() {
   );
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100">
       <Navbar />
-      <main className="mx-auto w-full max-w-4xl px-6 py-8">
-        <h2 className="text-2xl font-semibold">📜 Your Code Submissions</h2>
+      <main className="mx-auto w-full max-w-5xl px-6 py-8">
+        <section className="animate-fade-up rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg backdrop-blur dark:border-white/10 dark:bg-zinc-900/65">
+          <h2 className="text-2xl font-bold">📜 Your Submissions</h2>
 
-        {loading && <p className="mt-3">Loading submissions...</p>}
-        {error && <p className="mt-3 text-red-600">{error}</p>}
+          {loading && <p className="mt-3 text-zinc-600 dark:text-zinc-300">Loading submissions...</p>}
+          {error && <p className="mt-3 text-red-600">{error}</p>}
 
-        {!loading && !error && sorted.length === 0 && <p className="mt-3">No submissions yet.</p>}
+          {!loading && !error && sorted.length === 0 && (
+            <p className="mt-3 text-zinc-600 dark:text-zinc-300">No submissions yet.</p>
+          )}
 
-        {!loading && !error && sorted.length > 0 && (
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full border-collapse border text-left">
-              <thead>
-                <tr>
-                  <th className="border p-2">Language</th>
-                  <th className="border p-2">Submitted At</th>
-                  <th className="border p-2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sorted.map((sub) => (
-                  <tr key={sub._id}>
-                    <td className="border p-2">{sub.language.toUpperCase()}</td>
-                    <td className="border p-2">{new Date(sub.createdAt).toLocaleString()}</td>
-                    <td className="border p-2">
-                      <button
-                        className="rounded border px-3 py-1"
-                        onClick={() => router.push(`/review/${sub._id}`)}
-                      >
-                        Review
-                      </button>
-                    </td>
+          {!loading && !error && sorted.length > 0 && (
+            <div className="mt-4 overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
+              <table className="w-full border-collapse text-left">
+                <thead className="bg-zinc-50 dark:bg-zinc-800/70">
+                  <tr>
+                    <th className="p-3">Language</th>
+                    <th className="p-3">Submitted At</th>
+                    <th className="p-3">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {sorted.map((sub) => (
+                    <tr key={sub._id} className="border-t border-zinc-200 dark:border-zinc-700">
+                      <td className="p-3 font-medium">{sub.language.toUpperCase()}</td>
+                      <td className="p-3 text-sm text-zinc-600 dark:text-zinc-300">
+                        {new Date(sub.createdAt).toLocaleString()}
+                      </td>
+                      <td className="p-3">
+                        <button
+                          className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+                          onClick={() => router.push(`/review/${sub._id}`)}
+                        >
+                          Review
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
       </main>
     </div>
   );

@@ -35,43 +35,58 @@ export default function ReviewPage() {
   }, [params?.id]);
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100">
       <Navbar />
-      <main className="mx-auto w-full max-w-4xl px-6 py-8">
-        <h2 className="text-2xl font-semibold">🧠 Code Review</h2>
+      <main className="mx-auto w-full max-w-5xl px-6 py-8">
+        <h2 className="animate-fade-up text-3xl font-extrabold">🧠 Review Insights</h2>
 
-        {!review && !error && <p className="mt-3">Loading review...</p>}
+        {!review && !error && <p className="mt-3 text-zinc-600 dark:text-zinc-300">Loading review...</p>}
         {error && <p className="mt-3 text-red-600">{error}</p>}
 
         {review && (
-          <div className="mt-4 space-y-3">
-            <p><b>Score:</b> {review.overallScore}</p>
-            <p><b>Time Complexity:</b> {review.timeComplexity}</p>
-            <p><b>Space Complexity:</b> {review.spaceComplexity}</p>
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <article className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65">
+              <p className="text-sm text-zinc-500 dark:text-zinc-300">Overall Score</p>
+              <p className="mt-2 text-3xl font-extrabold text-blue-600 dark:text-blue-300">{review.overallScore}</p>
+            </article>
+            <article className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65">
+              <p className="text-sm text-zinc-500 dark:text-zinc-300">Time Complexity</p>
+              <p className="mt-2 font-semibold">{review.timeComplexity}</p>
+            </article>
+            <article className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65">
+              <p className="text-sm text-zinc-500 dark:text-zinc-300">Space Complexity</p>
+              <p className="mt-2 font-semibold">{review.spaceComplexity}</p>
+            </article>
 
-            <section>
-              <h4 className="font-semibold">Logic Issues</h4>
-              <ul className="list-inside list-disc">
-                {review.logicIssues.map((issue, idx) => <li key={idx}>{issue}</li>)}
+            <section className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65 md:col-span-2">
+              <h4 className="font-bold">Logic Issues</h4>
+              <ul className="mt-2 list-inside list-disc space-y-1 text-zinc-700 dark:text-zinc-200">
+                {review.logicIssues.map((issue, idx) => (
+                  <li key={idx}>{issue}</li>
+                ))}
               </ul>
             </section>
 
-            <section>
-              <h4 className="font-semibold">Security Issues</h4>
-              <ul className="list-inside list-disc">
-                {review.securityIssues.map((issue, idx) => <li key={idx}>{issue}</li>)}
+            <section className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65">
+              <h4 className="font-bold">Security Issues</h4>
+              <ul className="mt-2 list-inside list-disc space-y-1 text-zinc-700 dark:text-zinc-200">
+                {review.securityIssues.map((issue, idx) => (
+                  <li key={idx}>{issue}</li>
+                ))}
               </ul>
             </section>
 
-            <section>
-              <h4 className="font-semibold">Interviewer Feedback</h4>
-              <p>{review.interviewerFeedback}</p>
+            <section className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65 md:col-span-3">
+              <h4 className="font-bold">Interviewer Feedback</h4>
+              <p className="mt-2 text-zinc-700 dark:text-zinc-200">{review.interviewerFeedback}</p>
             </section>
 
-            <section>
-              <h4 className="font-semibold">Suggested Improvements</h4>
-              <ul className="list-inside list-disc">
-                {review.suggestedImprovements.map((item, idx) => <li key={idx}>{item}</li>)}
+            <section className="rounded-2xl border border-white/40 bg-white/75 p-5 shadow-lg dark:border-white/10 dark:bg-zinc-900/65 md:col-span-3">
+              <h4 className="font-bold">Suggested Improvements</h4>
+              <ul className="mt-2 list-inside list-disc space-y-1 text-zinc-700 dark:text-zinc-200">
+                {review.suggestedImprovements.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
               </ul>
             </section>
           </div>
