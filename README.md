@@ -1,125 +1,82 @@
 # CodeSense – AI Code Reviewer for Students & Interns
 
-CodeSense is an AI-powered code review platform designed to help **students, interns, and beginner programmers understand *why* their code is weak**, not just how to fix it.
-
-Unlike traditional linters or autocomplete tools, CodeSensei simulates **real interviewer-style feedback**, highlights conceptual gaps, and tracks improvement over time.
-
-> Disclaimer:  
-> This tool assists learning and is **not a replacement for human code review or interviews**.
+CodeSense is an AI-powered code review platform designed to help students, interns, and beginner programmers understand *why* their code is weak, not just how to fix it.
 
 ---
 
-## 🎯 Problem Statement
+## Monorepo Structure
 
-Beginner programmers often struggle because:
-- They don’t know *why* their solution is incorrect
-- Online judges only say *Accepted / Wrong Answer*
-- AI tools fix code but don’t teach thinking
-- Interview expectations are unclear
+- `frontend/` – Next.js + Clerk client app (App Router)
+- `backend/` – Express + MongoDB API
 
 ---
 
-## Solution
+## Quick Start
 
-CodeSensei analyzes code using multiple AI passes to provide:
-- Logical correctness review
-- Time & space complexity analysis
-- Security & bad practice detection
-- Interviewer-style feedback
-- Hire / No-Hire reasoning
-- Personalized learning roadmap
+### 1) Install dependencies
 
----
+```bash
+cd frontend && npm install
+cd ../backend && npm install
+```
 
-## Target Users
+### 2) Configure environment
 
-- Computer Science students
-- Interns
-- Bootcamp learners
-- College placement training programs
+```bash
+cp frontend/.env.example frontend/.env.local
+cp backend/.env.example backend/.env
+```
 
----
+Required values:
 
-##  Core Features
+- Frontend
+  - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  - `CLERK_SECRET_KEY`
+  - `NEXT_PUBLIC_API_BASE_URL`
+- Backend
+  - `MONGO_URI`
+  - `PORT` (optional, defaults to `5000`)
 
-### 1️. Code Submission
-- Paste or upload code
-- Supported languages:
-  - C
-  - C++
-  - Java
-  - Python
-  - JavaScript
-- Submissions stored for progress tracking
+### 3) Run locally
 
----
+In one terminal:
 
-### 2️. AI Code Review Engine
-Multi-step AI analysis pipeline:
-- Logic correctness review
-- Time & space complexity analysis
-- Security & bad practice detection
-- Interviewer perspective feedback
-- Concept gap detection
-- Learning roadmap suggestions
+```bash
+cd backend
+npm run dev
+```
 
----
+In another terminal:
 
-### 3️. Interviewer Simulation
-- First impression analysis
-- Red flags an interviewer would notice
-- Follow-up interview questions
-- Hire / No-Hire reasoning with justification
+```bash
+cd frontend
+npm run dev
+```
+
+Open `http://localhost:3000`.
 
 ---
 
-### 4️. Scoring System
-Each submission is scored on:
-- Logic score
-- Complexity score
-- Security score
-- Code quality score
-- Interview readiness score
+## Current Features
+
+- Code submission API with request validation
+- Submission history endpoint by user
+- Submission-backed review generation endpoint
+- Clerk-protected frontend routes (`/submit`, `/dashboard`, `/history`, `/review/*`)
+- App Router pages for landing, submit, dashboard, history, and review details
 
 ---
 
-### 5️. Progress Tracking Dashboard
-- Submission history
-- Skill-wise performance tracking
-- Weekly improvement trends
-- Weak vs strong concept analysis
+## Troubleshooting
+
+- If backend exits immediately, confirm `backend/.env` has a valid `MONGO_URI`.
+- If frontend cannot start, run `npm install` inside `frontend` and verify access to npm registry.
+- Ensure `NEXT_PUBLIC_API_BASE_URL` points to your running backend (default `http://localhost:5000`).
 
 ---
 
-## Tech Stack
+## Deployment Notes
 
-### Frontend
-- Next.js (App Router)
-- React
-- Tailwind CSS
-- Framer Motion (animations)
-
-### Backend
-- Node.js
-- Express.js
-- REST APIs
-
-### AI
-- OpenAI / Gemini API
-- Multi-step prompt pipeline
-- Structured JSON responses
-
-### Database
-- MongoDB (Phase 1)
-- PostgreSQL (Phase 2 – planned migration)
-
-### Authentication
-- Clerk
-
-### Deployment
-- Frontend: Vercel
-- Backend: Render
-- Environment-based configuration
-
----
-
+- Frontend: deploy to Vercel and set frontend env vars in project settings.
+- Backend: deploy to Render (or similar) and set `MONGO_URI` and `PORT`.
+- Ensure `NEXT_PUBLIC_API_BASE_URL` points to deployed backend URL.
