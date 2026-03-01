@@ -1,22 +1,28 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const codeSubmissionSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true 
+const codeSubmissionSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+      index: true,
     },
-
-    language: { type: String, 
-        required: true
-     },
-
-     code: { type: String,
-        required: true 
-     }
-}, 
-{ 
-    timestamps: true 
-}
+    language: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      enum: ["c", "cpp", "java", "python", "javascript"],
+    },
+    code: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 export default mongoose.model("CodeSubmission", codeSubmissionSchema);
