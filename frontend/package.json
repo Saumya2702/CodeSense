@@ -2,14 +2,15 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
- "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start"
-},
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@clerk/nextjs": "^6.36.7",
-    "next": "^16.1.2",
+    "next": "16.1.2",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
