@@ -23,7 +23,7 @@ export default function Home() {
       <main className="mx-auto w-full max-w-6xl px-6 pb-16 pt-14">
         <section className="animate-fade-up rounded-3xl border border-white/40 bg-white/70 p-8 shadow-xl backdrop-blur dark:border-white/10 dark:bg-zinc-900/70">
           <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-200">
-            AI-powered code coaching
+            Interview Readiness Engine
           </span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
             Build interview-ready coding confidence.
